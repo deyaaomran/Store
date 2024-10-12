@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StoreP.Core.Dtos.Products;
+using StoreP.Core.Helper;
 using StoreP.Core.Services.Contract;
+using StoreP.Core.Specifications.Products;
 
 namespace StoreP.APIs.Controllers
 {
@@ -15,10 +18,10 @@ namespace StoreP.APIs.Controllers
             _productService = productService;
         }
         [HttpGet] // Get BaseUrl/api/Products
-        public async Task<IActionResult> GetAllProduct() // endpoint
+        public async Task<IActionResult> GetAllProduct([FromQuery] ProductSpecParams productSpec) // endpoint
         {
-            var result =await _productService.GetAllProductsAsync();
-            return Ok(result); //200
+            var result =await _productService.GetAllProductsAsync(productSpec);
+            return Ok( result); //200
         }
 
         [HttpGet("brands")] // Get BaseUrl/api/Products/brands

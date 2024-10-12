@@ -30,7 +30,7 @@ namespace StoreP.APIs
                 });
             builder.Services.AddScoped<IProductService , ProductService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddAutoMapper(M => M.AddProfile(new ProductProfile()));
+            builder.Services.AddAutoMapper(M => M.AddProfile(new ProductProfile(builder.Configuration)));
 
 
 
@@ -58,6 +58,7 @@ namespace StoreP.APIs
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseStaticFiles(); // Allow static Files to apper
 
             app.UseHttpsRedirection();
 

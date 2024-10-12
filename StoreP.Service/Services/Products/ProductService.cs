@@ -2,7 +2,10 @@
 using StoreP.Core;
 using StoreP.Core.Dtos.Products;
 using StoreP.Core.Entities;
+using StoreP.Core.Helper;
 using StoreP.Core.Services.Contract;
+using StoreP.Core.Specifications;
+using StoreP.Core.Specifications.Products;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +26,16 @@ namespace StoreP.Service.Services.Products
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
-         =>  _mapper.Map<IEnumerable<ProductDto>>(await _unitOfWork.Repsitory<Product, int>().GetAllAsync());
+        public async Task<PaginationResponse<ProductDto>> GetAllProductsAsync(ProductSpecParams productSpec)
+        {
+            var spec = new ProductSpecifications(productSpec);
+         
+            var mappedProducts = _mapper.Map<IEnumerable<ProductDto>>(await _unitOfWork.Repsitory<Product, int>().GetAllWithSpecAsync(spec));
+            var countSpec = new ProductWithCountSpecifications(productSpec);
+            var count = await _unitOfWork.Repsitory<Product, int>().GetCountAsync(countSpec);
+
+            return new PaginationResponse<ProductDto>(productSpec.PageSize ,productSpec.PageIndex , count , mappedProducts);
+        }
 
         public async Task<IEnumerable<TypeBrandDto>> GetAllBrandsAsync()
         {
@@ -39,7 +50,8 @@ namespace StoreP.Service.Services.Products
 
         public async Task<ProductDto> GetProductById(int id)
         {
-            var product = await _unitOfWork.Repsitory<Product, int>().GetAsync(id);
+            var spec = new ProductSpecifications(id);
+            var product = await _unitOfWork.Repsitory<Product, int>().GetWithSpecAsync(spec);
             return _mapper.Map<ProductDto>(product);
         }
     }
