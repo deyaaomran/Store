@@ -2,12 +2,13 @@
 using StoreP.Repository.Data.Contexts;
 using StoreP.Repository.Data;
 using Microsoft.EntityFrameworkCore;
+using StoreP.Service.Services.Notifications.WebSockets;
 
 namespace StoreP.APIs.Helper
 {
     public static class ConfigureMiddleware
     {
-        public static async Task<WebApplication> ConfigureMiddlewareAsync(this WebApplication app)
+        public static async Task<WebApplication> ConfigureMiddlewareAsync(this WebApplication app  )
         {
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
@@ -32,7 +33,11 @@ namespace StoreP.APIs.Helper
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                
+
             }
+
+
             app.UseStatusCodePagesWithReExecute("/error/{0}");
             app.UseStaticFiles(); // Allow static Files to apper
 
@@ -42,8 +47,24 @@ namespace StoreP.APIs.Helper
 
 
             app.MapControllers();
+            
 
             return app;
+        }
+        public static  void ADDConfigure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                
+                endpoints.MapHub<NotificationHub>("/notificationHub");
+            });
         }
     }
 }
