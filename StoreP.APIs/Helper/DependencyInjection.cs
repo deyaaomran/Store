@@ -33,6 +33,7 @@ namespace StoreP.APIs.Helper
         {
             services.AddControllers();
             services.AddScoped<FcmService>();
+            services.AddSignalR();
 
             return services;
         }
@@ -98,5 +99,6 @@ namespace StoreP.APIs.Helper
             });
             return services;
         }
+
     }
 }
