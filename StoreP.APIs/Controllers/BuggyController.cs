@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StoreP.APIs.Errors;
 using StoreP.Repository.Data.Contexts;
 
 namespace StoreP.APIs.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class BuggyController : ControllerBase
+ 
+    public class BuggyController : BaseApiController
     {
         private readonly StoreDbContext _context;
 
@@ -19,7 +19,7 @@ namespace StoreP.APIs.Controllers
         public async Task<IActionResult> GetNotFoundRequest()
         {
             var brand = await _context.Brands.FindAsync(100);
-            if (brand is null) return NotFound();
+            if (brand is null) return NotFound(new ApiErrorResponse(404 ,"brand with id :100 not found"));
             return Ok(brand);
         }
 
@@ -36,7 +36,7 @@ namespace StoreP.APIs.Controllers
         [HttpGet("badrequest")] // Get: /api/Buggy/badrequest
         public async Task<IActionResult> GetBadRequestError()
         {
-            return BadRequest();
+            return BadRequest(new ApiErrorResponse(400));
         }
 
         [HttpGet("badrequest/{id}")] // Get: /api/Buggy/badrequest/ahmed
@@ -44,12 +44,12 @@ namespace StoreP.APIs.Controllers
         {
             return Ok();
         }
-
+        
 
         [HttpGet("unauthorized")] // Get: /api/Buggy/unauthorized
         public async Task<IActionResult> GetError() 
         {
-            return Unauthorized();
+            return Unauthorized(new ApiErrorResponse(401));
         }
 
 
