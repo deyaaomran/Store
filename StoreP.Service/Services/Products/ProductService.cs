@@ -54,5 +54,8 @@ namespace StoreP.Service.Services.Products
             var product = await _unitOfWork.Repsitory<Product, int>().GetWithSpecAsync(spec);
             return _mapper.Map<ProductDto>(product);
         }
+
+
+
     }
 }
