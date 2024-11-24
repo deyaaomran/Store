@@ -14,7 +14,7 @@ public class FcmService
         using var client = new HttpClient();
 
         client.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", $"key={_serverKey}");
-
+        // Notifications
         var message = new
         {
             to = deviceToken,
